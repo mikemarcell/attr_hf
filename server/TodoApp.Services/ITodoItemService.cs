@@ -1,0 +1,19 @@
+﻿using TodoApp.Db.Model;
+
+namespace TodoApp.Db.Repositories
+{
+  public interface ITodoItemService
+  {
+    TodoItemDto Create(TodoItemDto item);
+
+    bool Delete(int id);
+
+    IEnumerable<TodoItemDto> GetAll();
+
+    TodoItemDto GetById(int id);
+
+    bool Update(TodoItemDto item);
+
+    IEnumerable<TodoItemDto> GetByOwnerId(int ownerId);
+  }
+}
