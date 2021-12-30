@@ -23,14 +23,14 @@ namespace TodoApp.Db.Repositories
 
         public IEnumerable<UserDto> GetAll()
         {
-            var items = todoContext.TodoItems.ToArray();
+            var items = todoContext.Users.ToArray();
             return items.Select(mapper.Map<UserDto>).ToArray();
         }
 
         public UserDto Create(UserDto item)
         {
-            var entity = mapper.Map<TodoItem>(item);
-            var res = todoContext.TodoItems.Add(entity);
+            var entity = mapper.Map<User>(item);
+            var res = todoContext.Users.Add(entity);
             todoContext.SaveChanges();
             return mapper.Map<UserDto>(res.Entity);
         }
@@ -42,12 +42,12 @@ namespace TodoApp.Db.Repositories
 
         public bool Delete(int id)
         {
-            var item = todoContext.TodoItems.Find(id);
+            var item = todoContext.Users.Find(id);
             if (item == null)
             {
                 return false;
             }
-            todoContext.TodoItems.Remove(item);
+            todoContext.Users.Remove(item);
             return true;
         }
     }

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using TodoApp.Db.Model;
+using TodoApp.Db.Dto;
 using TodoApp.Db.Repositories;
 
 namespace TodoApp.WebApi.Controllers;
@@ -9,12 +9,10 @@ namespace TodoApp.WebApi.Controllers;
 [Route("[controller]")]
 public class TodoItemController : ControllerBase
 {
-    private readonly ILogger<TodoItemController> logger;
     private readonly ITodoItemService todoItemService;
 
-    public TodoItemController(ILogger<TodoItemController> logger, ITodoItemService todoItemService)
+    public TodoItemController(ITodoItemService todoItemService)
     {
-        this.logger = logger;
         this.todoItemService = todoItemService;
     }
 
@@ -28,16 +26,22 @@ public class TodoItemController : ControllerBase
     [HttpGet]
     [Route("{id}")]
     [SwaggerOperation("Get todo item by id")]
+    [SwaggerResponse(404, "Todo item not found")]
     public IActionResult GetById(int id)
     {
-        return Ok(todoItemService.GetById(id));
+        var item = todoItemService.GetById(id);
+        if (item == null)
+        {
+            return NotFound();
+        }
+        return Ok(item);
     }
 
     [HttpGet]
     [SwaggerOperation("Get all todo items")]
-    public IActionResult GetAll(int id)
+    public IActionResult GetAll()
     {
-        return Ok(todoItemService.GetById(id));
+        return Ok(todoItemService.GetAll());
     }
 
     [HttpPut]

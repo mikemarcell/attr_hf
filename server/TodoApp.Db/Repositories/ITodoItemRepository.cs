@@ -1,8 +1,8 @@
-﻿using TodoApp.Db.Model;
+﻿using TodoApp.Db.Dto;
 
 namespace TodoApp.Db.Repositories
 {
-  public interface ITodoItemRepository
+    public interface ITodoItemRepository
   {
     TodoItemDto Create(TodoItemDto item);
 

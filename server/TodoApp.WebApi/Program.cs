@@ -5,6 +5,10 @@ using TodoApp.WebApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// logging
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+
 // Add services to the container.
 builder.Services.AddDbContext<TodoContext>();
 builder.Services.AddScoped<ITodoItemRepository, TodoItemRepository>();

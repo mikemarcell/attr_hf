@@ -1,4 +1,4 @@
-﻿using TodoApp.Db.Model;
+﻿using TodoApp.Db.Dto;
 
 namespace TodoApp.Db.Repositories
 {
