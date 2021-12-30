@@ -1,15 +1,16 @@
 ﻿using TodoApp.Db.Dto;
-using TodoApp.Db.Model;
 
 namespace TodoApp.Db.Repositories
 {
     public class UserService : IUserService
     {
         private readonly IUserRepository userRepository;
+        private readonly IUserPictureRepository userPictureRepository;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, IUserPictureRepository userPictureRepository)
         {
             this.userRepository = userRepository;
+            this.userPictureRepository = userPictureRepository;
         }
 
         public UserDto Create(UserDto item)
@@ -30,6 +31,16 @@ namespace TodoApp.Db.Repositories
         public UserDto GetById(int id)
         {
             return userRepository.GetById(id);
+        }
+
+        public UserPictureDto GetPicture(int id)
+        {
+            return userPictureRepository.GetPictureByUserId(id);
+        }
+
+        public void SetPicture(UserPictureDto userPicture)
+        {
+            userPictureRepository.SetPicture(userPicture);
         }
 
         public bool Update(UserDto item)

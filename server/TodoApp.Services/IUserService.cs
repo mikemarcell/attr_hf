@@ -1,5 +1,4 @@
 ﻿using TodoApp.Db.Dto;
-using TodoApp.Db.Model;
 
 namespace TodoApp.Db.Repositories
 {
@@ -14,5 +13,9 @@ namespace TodoApp.Db.Repositories
         UserDto GetById(int id);
 
         bool Update(UserDto item);
+
+        UserPictureDto GetPicture(int id);
+
+        void SetPicture(UserPictureDto userPicture);
     }
 }

@@ -11,6 +11,7 @@ builder.Services.AddScoped<ITodoItemRepository, TodoItemRepository>();
 builder.Services.AddScoped<ITodoItemService, TodoItemService>(); 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserPictureRepository, UserPictureRepository>();
 
 var mapperConfig = new MapperConfiguration(mc =>
 {
