@@ -1,4 +1,5 @@
-﻿using TodoApp.Db.Dto;
+﻿using TodoApp.Shared.Dto;
+using TodoApp.Shared.Interface;
 
 namespace TodoApp.Db.Repositories
 {

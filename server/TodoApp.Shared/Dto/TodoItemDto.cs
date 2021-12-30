@@ -1,4 +1,4 @@
-﻿namespace TodoApp.Db.Dto
+﻿namespace TodoApp.Shared.Dto
 {
     public class TodoItemDto
     {

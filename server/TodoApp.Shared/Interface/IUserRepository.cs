@@ -1,8 +1,8 @@
-﻿using TodoApp.Db.Dto;
+﻿using TodoApp.Shared.Dto;
 
-namespace TodoApp.Db.Repositories
+namespace TodoApp.Shared.Interface
 {
-    public interface IUserService
+    public interface IUserRepository
     {
         UserDto Create(UserDto item);
 
@@ -13,9 +13,5 @@ namespace TodoApp.Db.Repositories
         UserDto GetById(int id);
 
         bool Update(UserDto item);
-
-        UserPictureDto GetPicture(int id);
-
-        void SetPicture(UserPictureDto userPicture);
     }
 }

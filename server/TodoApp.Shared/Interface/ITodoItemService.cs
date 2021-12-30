@@ -1,6 +1,6 @@
-﻿using TodoApp.Db.Dto;
+﻿using TodoApp.Shared.Dto;
 
-namespace TodoApp.Db.Repositories
+namespace TodoApp.Shared.Interface
 {
     public interface ITodoItemService
   {

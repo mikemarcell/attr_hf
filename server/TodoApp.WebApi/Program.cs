@@ -1,6 +1,7 @@
 using AutoMapper;
 using TodoApp.Db;
 using TodoApp.Db.Repositories;
+using TodoApp.Shared.Interface;
 using TodoApp.WebApi;
 
 var builder = WebApplication.CreateBuilder(args);

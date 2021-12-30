@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using TodoApp.Db.Dto;
-using TodoApp.Db.Repositories;
+using TodoApp.Shared.Dto;
+using TodoApp.Shared.Interface;
 
 namespace TodoApp.WebApi.Controllers;
 

@@ -12,4 +12,8 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TodoApp.Shared\TodoApp.Shared.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
-using TodoApp.Db.Dto;
 using TodoApp.Db.Model;
+using TodoApp.Shared.Dto;
+using TodoApp.Shared.Interface;
 
 namespace TodoApp.Db.Repositories
 {
