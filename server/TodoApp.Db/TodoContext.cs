@@ -19,8 +19,6 @@ namespace TodoApp.Db
             ConnectionString = configuration.GetConnectionString("DefaultConnection");
         }
 
-        // The following configures EF to create a Sqlite database file in the
-        // special "local" folder for your platform.
         protected override void OnConfiguring(DbContextOptionsBuilder options)
             => options.UseSqlite(ConnectionString);
 

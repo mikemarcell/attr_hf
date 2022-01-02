@@ -3,17 +3,17 @@
 namespace TodoApp.Shared.Interface
 {
     public interface ITodoItemService
-  {
-    TodoItemDto Create(TodoItemDto item);
+    {
+        TodoItemDto Create(TodoItemDto item);
 
-    bool Delete(int id);
+        bool Delete(int id);
 
-    IEnumerable<TodoItemDto> GetAll();
+        IEnumerable<TodoItemDto> GetAll();
 
-    TodoItemDto GetById(int id);
+        TodoItemDto GetById(int id);
 
-    bool Update(TodoItemDto item);
+        bool Update(TodoItemDto item);
 
-    IEnumerable<TodoItemDto> GetByOwnerId(int ownerId);
-  }
+        IEnumerable<TodoItemDto> GetByOwnerId(int ownerId);
+    }
 }

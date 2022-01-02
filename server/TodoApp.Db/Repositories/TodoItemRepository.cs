@@ -43,7 +43,7 @@ namespace TodoApp.Db.Repositories
         public bool Update(TodoItemDto item)
         {
             var dbItem = todoContext.TodoItems.Find(item.Id);
-            if (dbItem == null || item.Title == dbItem.Title)
+            if (dbItem == null)
             {
                 return false;
             }
@@ -51,6 +51,7 @@ namespace TodoApp.Db.Repositories
             logger.LogInformation($"Updating todo item id={item.Id}, {dbItem.Title} >>> {item.Title}");
 
             dbItem.Title = item.Title;
+            dbItem.OwnerId = item.OwnerId > 0 ? item.OwnerId : dbItem.OwnerId;
             todoContext.TodoItems.Update(dbItem);
             todoContext.SaveChanges();
             return true;
@@ -65,6 +66,7 @@ namespace TodoApp.Db.Repositories
                 return false;
             }
             todoContext.TodoItems.Remove(item);
+            todoContext.SaveChanges();
             return true;
         }
 

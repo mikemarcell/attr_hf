@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
 using TodoApp.Db.Model;
 using TodoApp.Shared.Dto;
 using TodoApp.Shared.Interface;
@@ -38,7 +39,19 @@ namespace TodoApp.Db.Repositories
 
         public bool Update(UserDto item)
         {
-            throw new NotImplementedException();
+            var dbItem = todoContext.Users.Find(item.Id);
+            
+            if (dbItem == null)
+            {
+                return false;
+            }
+
+            dbItem.Name = item.Name;
+            dbItem.Email = item.Email;
+
+            todoContext.Users.Update(dbItem);
+            todoContext.SaveChanges();
+            return true;
         }
 
         public bool Delete(int id)
@@ -49,6 +62,7 @@ namespace TodoApp.Db.Repositories
                 return false;
             }
             todoContext.Users.Remove(item);
+            todoContext.SaveChanges(true);
             return true;
         }
     }
