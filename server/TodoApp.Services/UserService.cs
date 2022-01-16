@@ -29,6 +29,11 @@ namespace TodoApp.Db.Repositories
             return userRepository.GetAll();
         }
 
+        public UserDto GetByEmail(string email)
+        {
+            return userRepository.GetByEmail(email);
+        }
+
         public UserDto GetById(int id)
         {
             return userRepository.GetById(id);

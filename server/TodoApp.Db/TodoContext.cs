@@ -24,22 +24,20 @@ namespace TodoApp.Db
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>()
-                .HasMany<TodoItem>(u => u.TodoItems)
+            var user = modelBuilder.Entity<User>();
+
+            user.HasIndex(u => u.Email)
+                .IsUnique();
+
+            user.HasMany<TodoItem>(u => u.TodoItems)
                 .WithOne(t => t.Owner)
                 .HasForeignKey(t => t.OwnerId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<User>()
-                .HasMany<TodoItem>(u => u.TodoItems)
-                .WithOne(t => t.Owner)
-                .HasForeignKey(t => t.OwnerId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<User>()
-                .HasOne(u => u.UserPicture)
+            user.HasOne(u => u.UserPicture)
                 .WithOne(u => u.User)
-                .HasForeignKey<UserPicture>(u => u.UserId);
+                .HasForeignKey<UserPicture>(u => u.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

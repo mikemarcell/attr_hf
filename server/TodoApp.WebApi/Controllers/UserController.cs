@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using TodoApp.Shared.Dto;
@@ -7,6 +8,7 @@ namespace TodoApp.WebApi.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+[Authorize]
 public class UserController : ControllerBase
 {
     private readonly IUserService userService;
@@ -16,13 +18,6 @@ public class UserController : ControllerBase
     {
         this.userService = userService;
         this.todoItemService = todoItemService;
-    }
-
-    [HttpPost]
-    [SwaggerOperation("Add a new user")]
-    public IActionResult Create([FromBody] UserDto todoItem)
-    {
-        return Ok(userService.Create(todoItem));
     }
 
     [HttpGet]

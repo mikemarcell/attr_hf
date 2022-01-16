@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Security.Claims;
 using TodoApp.Shared.Dto;
 using TodoApp.Shared.Interface;
 
@@ -7,6 +9,7 @@ namespace TodoApp.WebApi.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+[Authorize]
 public class TodoItemController : ControllerBase
 {
     private readonly ITodoItemService todoItemService;
@@ -20,6 +23,7 @@ public class TodoItemController : ControllerBase
     [SwaggerOperation("Add a new todo item")]
     public IActionResult Create([FromBody] TodoItemDto todoItem)
     {
+        todoItem.OwnerId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
         return Ok(todoItemService.Create(todoItem));
     }
 
@@ -39,6 +43,7 @@ public class TodoItemController : ControllerBase
 
     [HttpGet]
     [SwaggerOperation("Get all todo items")]
+    [Authorize(Policy = "AdminOnly")]
     public IActionResult GetAll()
     {
         return Ok(todoItemService.GetAll());

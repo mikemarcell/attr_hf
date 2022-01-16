@@ -13,5 +13,7 @@ namespace TodoApp.Shared.Interface
         UserDto GetById(int id);
 
         bool Update(UserDto item);
+
+        UserDto? GetByEmail(string email);
     }
 }

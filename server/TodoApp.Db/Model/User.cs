@@ -8,6 +8,12 @@
 
         public string Email { get; set; }
 
+        public bool IsAdmin { get; set; }
+
+        public string PasswordHash { get; set; }
+
+        public byte[] PasswordSalt { get; set; }
+
         public IList<TodoItem> TodoItems { get; set; } = new List<TodoItem>();
 
         public UserPicture UserPicture { get; set; }

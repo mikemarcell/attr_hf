@@ -1,6 +1,11 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
+using System.Text;
 using TodoApp.Db;
 using TodoApp.Db.Repositories;
+using TodoApp.Services;
 using TodoApp.Shared.Interface;
 using TodoApp.WebApi;
 
@@ -13,35 +18,53 @@ builder.Logging.AddConsole();
 // Add services to the container.
 builder.Services.AddDbContext<TodoContext>();
 builder.Services.AddScoped<ITodoItemRepository, TodoItemRepository>();
-builder.Services.AddScoped<ITodoItemService, TodoItemService>(); 
+builder.Services.AddScoped<ITodoItemService, TodoItemService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserPictureRepository, UserPictureRepository>();
+builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 var mapperConfig = new MapperConfiguration(mc =>
 {
-  mc.AddProfile(new MappingProfile());
+    mc.AddProfile(new MappingProfile());
 });
 
 IMapper mapper = mapperConfig.CreateMapper();
 builder.Services.AddSingleton(mapper);
 
 builder.Services.AddControllers();
+builder.Services.AddSwagger();
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(o => o.EnableAnnotations());
+builder.Services.AddAuthorization(options => {
+    options.AddPolicy("AdminOnly", policy => policy.RequireClaim(ClaimTypes.Role, "admin"));
+});
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt =>
+{
+    opt.TokenValidationParameters = new()
+    {
+        ValidateIssuer = true,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+    };
+});
 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-  app.ApplyMigrations();
-  app.UseSwagger();
-  app.UseSwaggerUI();
+    app.ApplyMigrations();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

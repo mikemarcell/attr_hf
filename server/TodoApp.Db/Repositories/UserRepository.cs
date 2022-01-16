@@ -65,5 +65,11 @@ namespace TodoApp.Db.Repositories
             todoContext.SaveChanges(true);
             return true;
         }
+
+        public UserDto? GetByEmail(string email)
+        {
+            var user = todoContext.Users.FirstOrDefault(x => x.Email == email);
+            return user != null ? mapper.Map<UserDto>(user) : null;
+        }
     }
 }

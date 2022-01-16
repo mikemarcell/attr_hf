@@ -17,5 +17,7 @@ namespace TodoApp.Shared.Interface
         UserPictureDto GetPicture(int id);
 
         void SetPicture(UserPictureDto userPicture);
+
+        UserDto GetByEmail(string email);
     }
 }
