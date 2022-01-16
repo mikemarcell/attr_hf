@@ -47,7 +47,7 @@ namespace TodoApp.Db.Repositories
             }
 
             dbItem.Name = item.Name;
-            dbItem.Email = item.Email;
+            dbItem.IsAdmin = item.IsAdmin;
 
             todoContext.Users.Update(dbItem);
             todoContext.SaveChanges();

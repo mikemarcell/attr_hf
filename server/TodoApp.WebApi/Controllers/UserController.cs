@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using TodoApp.Shared.Dto;
 using TodoApp.Shared.Interface;
+using TodoApp.WebApi.Auth;
 
 namespace TodoApp.WebApi.Controllers;
 
@@ -13,28 +14,43 @@ public class UserController : ControllerBase
 {
     private readonly IUserService userService;
     private readonly ITodoItemService todoItemService;
+    private readonly IAuthorizationService authorizationService;
 
-    public UserController(IUserService userService, ITodoItemService todoItemService)
+    public UserController(
+        IUserService userService,
+        ITodoItemService todoItemService,
+        IAuthorizationService authorizationService)
     {
         this.userService = userService;
         this.todoItemService = todoItemService;
+        this.authorizationService = authorizationService;
     }
 
     [HttpGet]
     [Route("{id}")]
     [SwaggerOperation("Get users by id")]
     [SwaggerResponse(404, "User not found")]
-    public IActionResult GetById(int id)
+    [SwaggerResponse(403, "Unauthorized")]
+    public async Task<IActionResult> GetByIdAsync(int id)
     {
         var item = userService.GetById(id);
         if (item == null)
         {
             return NotFound();
         }
+
+        var authResult = await authorizationService.AuthorizeAsync(User, id, PolicyNames.UserPolicy);
+
+        if (!authResult.Succeeded)
+        {
+            return Unauthorized();
+        }
+
         return Ok(item);
     }
 
     [HttpGet]
+    [Authorize(Policy = PolicyNames.AdminOnlyPolicy)]
     [SwaggerOperation("Get all users")]
     public IActionResult GetAll()
     {
@@ -42,30 +58,56 @@ public class UserController : ControllerBase
     }
 
     [HttpPut]
+    [Route("{id}")]
     [SwaggerOperation("Update a user")]
-    public IActionResult Update(UserDto item)
+    [SwaggerResponse(403, "Unauthorized")]
+    public async Task<IActionResult> UpdateAsync(int id, [FromBody]UserDto item)
     {
+        var authResult = await authorizationService.AuthorizeAsync(User, id, PolicyNames.UserPolicy);
+
+        if (!authResult.Succeeded)
+        {
+            return Unauthorized();
+        }
+
         return Ok(userService.Update(item));
     }
 
     [HttpDelete]
     [SwaggerOperation("Delete a user")]
-    public IActionResult Delete(int id)
+    [SwaggerResponse(403, "Unauthorized")]
+    public async Task<IActionResult> DeleteAsync(int id)
     {
+        var authResult = await authorizationService.AuthorizeAsync(User, id, PolicyNames.UserPolicy);
+
+        if (!authResult.Succeeded)
+        {
+            return Unauthorized();
+        }
+
         return Ok(userService.Delete(id));
     }
 
     [HttpGet]
     [Route("{id}/TodoItems")]
     [SwaggerOperation("Get todo items by owner")]
-    public IActionResult GetTodoItemsByOwnerId(int id)
+    [SwaggerResponse(403, "Unauthorized")]
+    public async Task<IActionResult> GetTodoItemsByOwnerIdAsync(int id)
     {
+        var authResult = await authorizationService.AuthorizeAsync(User, id, PolicyNames.UserPolicy);
+
+        if (!authResult.Succeeded)
+        {
+            return Unauthorized();
+        }
+
         return Ok(todoItemService.GetByOwnerId(id));
     }
 
     [HttpGet]
     [Route("{id}/Picture")]
     [SwaggerOperation("Get a users's picture")]
+    [SwaggerResponse(404, "Not found")]
     public IActionResult GetPicture(int id)
     {
         var picture = userService.GetPicture(id);
@@ -81,8 +123,16 @@ public class UserController : ControllerBase
     [HttpPost]
     [Route("{id}/Picture")]
     [SwaggerOperation("Get a users's picture")]
-    public IActionResult SetPicture(int id, IFormFile picture)
+    [SwaggerResponse(403, "Unauthorized")]
+    public async Task<IActionResult> SetPictureAsync(int id, IFormFile picture)
     {
+        var authResult = await authorizationService.AuthorizeAsync(User, id, PolicyNames.UserPolicy);
+
+        if (!authResult.Succeeded)
+        {
+            return Unauthorized();
+        }
+
         using var stream = new MemoryStream();
         picture.CopyTo(stream);
         var userPicture = new UserPictureDto { UserId = id, ContentType = picture.ContentType, Data = stream.ToArray() };

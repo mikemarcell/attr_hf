@@ -4,6 +4,7 @@ using Swashbuckle.AspNetCore.Annotations;
 using System.Security.Claims;
 using TodoApp.Shared.Dto;
 using TodoApp.Shared.Interface;
+using TodoApp.WebApi.Auth;
 
 namespace TodoApp.WebApi.Controllers;
 
@@ -13,10 +14,12 @@ namespace TodoApp.WebApi.Controllers;
 public class TodoItemController : ControllerBase
 {
     private readonly ITodoItemService todoItemService;
+    private readonly IAuthorizationService authorizationService;
 
-    public TodoItemController(ITodoItemService todoItemService)
+    public TodoItemController(ITodoItemService todoItemService, IAuthorizationService authorizationService)
     {
         this.todoItemService = todoItemService;
+        this.authorizationService = authorizationService;
     }
 
     [HttpPost]
@@ -31,35 +34,64 @@ public class TodoItemController : ControllerBase
     [Route("{id}")]
     [SwaggerOperation("Get todo item by id")]
     [SwaggerResponse(404, "Todo item not found")]
-    public IActionResult GetById(int id)
+    [SwaggerResponse(403, "Unauthorized")]
+    public async Task<IActionResult> GetByIdAsync(int id)
     {
         var item = todoItemService.GetById(id);
+        
         if (item == null)
         {
             return NotFound();
         }
+
+        var authResult = await authorizationService.AuthorizeAsync(User, id, PolicyNames.OwnerPolicy);
+        
+        if (!authResult.Succeeded)
+        {
+            return Unauthorized();
+        }
+
         return Ok(item);
     }
 
     [HttpGet]
+    [Authorize(Policy = PolicyNames.AdminOnlyPolicy)]
     [SwaggerOperation("Get all todo items")]
-    [Authorize(Policy = "AdminOnly")]
+    [SwaggerResponse(403, "Unauthorized")]
     public IActionResult GetAll()
     {
         return Ok(todoItemService.GetAll());
     }
 
     [HttpPut]
+    [Route("{id}")]
     [SwaggerOperation("Update todo item")]
-    public IActionResult Update(TodoItemDto item)
+    [SwaggerResponse(403, "Unauthorized")]
+    public async Task<IActionResult> UpdateAsync(int id, [FromBody] TodoItemDto item)
     {
+        var authResult = await authorizationService.AuthorizeAsync(User, id, PolicyNames.OwnerPolicy);
+
+        if (!authResult.Succeeded)
+        {
+            return Unauthorized();
+        }
+
         return Ok(todoItemService.Update(item));
     }
 
     [HttpDelete]
+    [Route("{id}")]
     [SwaggerOperation("Delete todo item")]
-    public IActionResult Delete(int id)
+    [SwaggerResponse(403, "Unauthorized")]
+    public async Task<IActionResult> DeleteAsync(int id)
     {
+        var authResult = await authorizationService.AuthorizeAsync(User, id, PolicyNames.OwnerPolicy);
+
+        if (!authResult.Succeeded)
+        {
+            return Unauthorized();
+        }
+
         return Ok(todoItemService.Delete(id));
     }
 }
